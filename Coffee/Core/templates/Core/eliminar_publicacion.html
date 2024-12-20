@@ -1,0 +1,12 @@
+{% extends 'Core/base.html'%}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h2>¿Estás seguro de que deseas eliminar esta publicación?</h2>
+<p>{{ publicacion.titulo }}</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a href="{% url 'foro' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

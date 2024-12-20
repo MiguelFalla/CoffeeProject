@@ -1,0 +1,16 @@
+{% extends 'Core/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Crear Publicación{% endblock %}
+
+{% block content-crear %}
+<div class="container mt-4">
+    <h1>Crear Publicación</h1>
+    <form method="post" enctype="multipart/form-data">  <!-- Necesario para subir archivos -->
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Aquí se renderizan todos los campos del formulario, incluida la imagen -->
+        <button type="submit" class="btn btn-primary">Publicar</button>
+        <a href="{% url 'foro' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

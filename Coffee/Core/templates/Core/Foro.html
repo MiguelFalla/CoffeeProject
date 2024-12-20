@@ -1,0 +1,70 @@
+{% extends 'Core/base.html'%}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Foro</h1>
+    <a href="{% url 'crear_publicacion.html' %}" class="btn btn-primary mb-3">Nueva Publicación</a>
+    <div class="row">
+        {% for publicacion in publicaciones %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                {% if publicacion.imagen %}
+                <img src="{{ publicacion.imagen.url }}" class="card-img-top" alt="{{ publicacion.titulo }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ publicacion.titulo }}</h5>
+                    <p class="card-text">{{ publicacion.contenido }}</p>
+                    <p class="text-muted">
+                        Publicado por {{ publicacion.autor.username }} 
+                        el {{ publicacion.fecha_creacion|date:"d M Y H:i" }}
+                    </p>
+                    <!-- Opciones para el autor de la publicación -->
+                    {% if user == publicacion.autor %}
+                    <a href="{% url 'editar_publicacion' publicacion.id %}" class="btn btn-warning btn-sm">Editar</a>
+                    <form action="{% url 'eliminar_publicacion.html' publicacion.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                    </form>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <h6>Comentarios</h6>
+                    <ul class="list-unstyled">
+                        {% for comentario in publicacion.comentario_set.all %}
+                        <li>
+                            <strong>{{ comentario.autor.username }}</strong>: {{ comentario.contenido }}
+                            {% if user == comentario.autor %}
+                            <form action="{% url 'eliminar_comentario.html' comentario.id %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link text-danger btn-sm">Eliminar</button>
+                            </form>
+                            {% endif %}
+                        </li>
+                        {% empty %}
+                        <li>No hay comentarios aún.</li>
+                        {% endfor %}
+                    </ul>
+                    <form action="{% url 'agregar_comentario.html' publicacion.id %}" method="post" class="mt-2">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input type="text" name="contenido" class="form-control" placeholder="Escribe un comentario..." required>
+                            <button type="submit" class="btn btn-primary">Comentar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="d-flex justify-content-center">
+        {% if publicaciones.has_previous %}
+        <a href="?page={{ publicaciones.previous_page_number }}" class="btn btn-light">Anterior</a>
+        {% endif %}
+        <span class="mx-2">Página {{ publicaciones.number }} de {{ publicaciones.paginator.num_pages }}</span>
+        {% if publicaciones.has_next %}
+        <a href="?page={{ publicaciones.next_page_number }}" class="btn btn-light">Siguiente</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

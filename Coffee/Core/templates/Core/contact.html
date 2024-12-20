@@ -1,0 +1,32 @@
+{% extends 'Core/base.html'%}
+{% load static %}
+
+{% block content-contact %}
+
+<body>
+    <h1>Formulario de Contacto</h1>
+    {% if success %}
+        <p>¡Correo enviado exitosamente!</p>
+    {% elif error %}
+        <p>Error al enviar el correo: {{ error }}</p>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <label for="name">Tu Nombre:</label>
+        <input type="text" name="name" id="name" required>
+        <br>
+        <label for="email">Tu Email:</label>
+        <input type="email" name="email" id="email" required>
+        <br>
+        <label for="subject">Asunto:</label>
+        <input type="text" name="subject" id="subject" required>
+        <br>
+        <label for="message">Mensaje:</label>
+        <textarea name="message" id="message" rows="5" required></textarea>
+        <br>
+        <button type="submit">Enviar</button>
+    </form>
+</body>
+
+
+{% endblock content-contact %}
